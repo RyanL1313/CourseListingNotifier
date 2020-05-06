@@ -1,3 +1,5 @@
+#
+
 import copy
 import bs4
 import requests
@@ -16,13 +18,15 @@ def main():
     email = input("Enter your email address: ")
     password = getpass.getpass("Enter your password: ")
 
+    courses_needed_checking = ["TECHNICAL WRITING", "INTRO DIGITAL COMP ARCHITECTUR"]  # Change this list to whatever
+    # courses you want updates on
+    requested_course_categories = ["EH", "CS"]  # List of course categories associated with the above list
+
     while True:
+        # For debugging purposes
         for course in original_course_object_list:
             print(course.title)
 
-        courses_needed_checking = ["TECHNICAL WRITING", "INTRO DIGITAL COMP ARCHITECTUR"] # Change this list to whatever
-        # courses you want updates on
-        requested_course_categories = ["EH", "CS"] # List of course categories associated with the above list
         new_course_object_list = [] # New list of course objects after checking the webpage
         details_in_email = [] # List of details about what was changed on the webpage
 
@@ -94,7 +98,7 @@ def main():
 
             original_course_object_list = copy.deepcopy(new_course_object_list) # There is now a new original list for the next comps
 
-        time.sleep(300) # This program executes every 5 minutes
+        time.sleep(3) # This program executes every 5 minutes
 
 
 # Used to retrieve a course attribute in the line of data based on the indices provided.
