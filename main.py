@@ -1,4 +1,17 @@
-#
+# UAH Course Listing Notifier
+
+# The purpose of this program is to notify myself via email when the status of certain attributes of UAH courses
+# change. The courses to watch along with their category are defined before the infinite loop, and are necessary
+# to get status updates for those courses.
+# Scrapes data from the UAH public course listing page using BeautifulSoup.
+# When the program is exited, the previously obtained course data is saved in savedcourses.txt, so if a change was
+# made to the courses being watched on the UAH course listing page while the program wasn't running, the program will
+# also be able to determine that
+# Sender email and password are requested through the terminal in order to avoid putting the login information in this
+# code
+
+# Author: Ryan Lynch
+
 
 import copy
 import bs4
@@ -10,6 +23,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import getpass
+
 
 def main():
     original_course_object_list = populate_original_course_list() # Get the last saved course list from the savedcourses text file
