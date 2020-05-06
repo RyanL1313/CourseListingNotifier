@@ -198,5 +198,3 @@ def populate_original_course_list():
 
 if __name__ == "__main__":
     main()
-
-
