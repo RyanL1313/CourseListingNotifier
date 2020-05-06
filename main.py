@@ -112,7 +112,7 @@ def main():
 
             original_course_object_list = copy.deepcopy(new_course_object_list) # There is now a new original list for the next comps
 
-        time.sleep(3) # This program executes every 5 minutes
+        time.sleep(300) # This program executes every 5 minutes
 
 
 # Used to retrieve a course attribute in the line of data based on the indices provided.
