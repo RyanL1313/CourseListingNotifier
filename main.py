@@ -10,14 +10,16 @@ from email.mime.text import MIMEText
 import getpass
 
 def main():
-    original_course_object_list = []  # List of course objects to be compared against the new list obtained by the
-    # program
+    original_course_object_list = populate_original_course_list() # Get the last saved course list from the savedcourses text file
 
     # Obtaining the email and password before proceeding with the program
     email = input("Enter your email address: ")
     password = getpass.getpass("Enter your password: ")
 
     while True:
+        for course in original_course_object_list:
+            print(course.title)
+
         courses_needed_checking = ["TECHNICAL WRITING", "INTRO DIGITAL COMP ARCHITECTUR"] # Change this list to whatever
         # courses you want updates on
         requested_course_categories = ["EH", "CS"] # List of course categories associated with the above list
@@ -62,16 +64,9 @@ def main():
                         # Now, create the new course object based on the acquired data
                         # Gets compared to the old course object to check if anything has changed on the webpage
                         new_course = Course(crn, course_title, available_slots, waitlist_number, instructor)
-                        #new_course.print_course()
-
                         new_course_object_list.append(new_course) # Add the course object to the new list
-
-        if len(original_course_object_list) == 0: # First run-through of the program
-            print("first run")
-            original_course_object_list = copy.deepcopy(new_course_object_list) # Now we have something for comparison
-        elif len(original_course_object_list) != len(new_course_object_list):  # New section was added
-            print("in here")
-            details_in_email.append("A new section for a course you were watching was added!")
+        if len(original_course_object_list) != len(new_course_object_list):  # New section was added
+            details_in_email.append("A new section for a course you were watching was added!\n")
         else: # The new and original lists are the same size. Now we just check if any course attributes have changed
             index_original = 0 # Index of original_course_object_list to be updated alongside new_course_object_list
             for course_obj in new_course_object_list:
@@ -79,23 +74,27 @@ def main():
                     # Now we're checking what individual attributes changed so the e-mail will specify this
                     if course_obj.avail != original_course_object_list[index_original].avail:
                         details_in_email.append("The number of available slots for CRN " + course_obj.crn + " has "
-                                                                                                            "changed.")
+                                                                                                            "changed.\n")
                     if course_obj.waitlist != original_course_object_list[index_original].waitlist:
-                        details_in_email.append("The waitlist number for CRN " + course_obj.crn + " has changed.")
+                        details_in_email.append("The waitlist number for CRN " + course_obj.crn + " has changed.\n")
 
                     if course_obj.instructor != original_course_object_list[index_original].instructor:
-                        details_in_email.append("The instructor for CRN " + course_obj.crn + " has changed.")
+                        details_in_email.append("The instructor for CRN " + course_obj.crn + " has changed.\n")
 
-                    details_in_email.append("\n") # New line to separate different course sections in the e-mail
 
                 index_original += 1
 
         if len(details_in_email) != 0: # There was a change to the course listings
-           # email_message = create_email_message(details_in_email)  # The message that will go in the body of the email
-            #send_email(email, password, email_message) # Send the email to myself about the changes
-            original_course_object_list = new_course_object_list # There is now a new original list for the next comps
+            email_message = create_email_message(details_in_email)  # The message that will go in the body of the email
+            send_email(email, password, email_message) # Send the email to myself about the changes
 
-        time.sleep(3) # This program executes every 5 minutes
+            # Create the list of information to go in the file
+            new_list_to_save = create_information_to_save(new_course_object_list)
+            save_course_data(new_list_to_save) # Save the new data of each course to a text file
+
+            original_course_object_list = copy.deepcopy(new_course_object_list) # There is now a new original list for the next comps
+
+        time.sleep(300) # This program executes every 5 minutes
 
 
 # Used to retrieve a course attribute in the line of data based on the indices provided.
@@ -115,9 +114,9 @@ def create_email_message(details):
 
     return message
 
+
 # Sends an email to myself about changes to UAH's course listing page
 def send_email(email, password, message):
-    print("in here")
     mail = smtplib.SMTP("smtp.gmail.com", 587)
     mail.ehlo()
     mail.starttls()
@@ -125,13 +124,58 @@ def send_email(email, password, message):
 
     full_message = MIMEMultipart()
 
-    full_message["Subject"] = "Testing"
+    full_message["Subject"] = "Course Changes!"
     full_message["From"] = email
     full_message["To"] = email
     full_message.attach(MIMEText(message, "plain"))
 
     mail.sendmail(email, email, full_message.as_string())
     mail.close()
+
+
+# Returns a list, each value in the list is a course attribute. Used to save information to the savedcourses text file.
+def create_information_to_save(new_list):
+    saved_list = []
+    for course_obj in new_list:
+        saved_list.append(course_obj.crn)
+        saved_list.append(course_obj.title)
+        saved_list.append(course_obj.avail)
+        saved_list.append(course_obj.waitlist)
+        saved_list.append(course_obj.instructor)
+
+    return saved_list
+
+
+# Write the information about each course to the savedcourses text file for use upon starting the program
+def save_course_data(saved_list):
+    saved_data_file = open("savedcourses.txt", "w")  # Text file that gets data for each course saved to it
+
+    for attribute in saved_list:
+        saved_data_file.write(attribute + "\n")
+
+    saved_data_file.close()
+
+
+# Puts all of the course objects into the original course list at the start of the program by reading from the
+# saved data file.
+# Returns the original list of courses at the start of program execution.
+def populate_original_course_list():
+    saved_data_file = open("savedcourses.txt", "r")  # Open saved course data text file for reading
+    attributes = []
+    course_list = []
+
+    index = 0 # Used to check if a course object needs to be created and added
+    for attribute in saved_data_file:
+        attributes.append(attribute.strip())
+        index += 1
+        if index % 5 == 0: # Have all 5 of the course's attributes
+            new_course = Course(attributes[0], attributes[1], attributes[2], attributes[3], attributes[4])
+            course_list.append(new_course)
+            attributes.clear() # Clear the list so a new course's attributes can be obtained
+
+    saved_data_file.close()
+
+    return course_list
 
 
 if __name__ == "__main__":
