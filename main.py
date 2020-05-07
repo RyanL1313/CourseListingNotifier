@@ -92,8 +92,11 @@ def main():
                     new_course = Course(crn, course_title, available_slots, waitlist_number, instructor)
                     new_course_object_list.append(new_course) # Add the course object to the new list
 
-    if len(original_course_object_list) != len(new_course_object_list):  # New section was added
-        details_in_email.append("A new section for a course you were watching was added!\n")
+    if len(new_course_object_list) != len(original_course_object_list):  # New section was added or section was removed.
+        if len(new_course_object_list) > len(original_course_object_list): # Section was added
+            details_in_email.append("A new section(s) for a course(s) you were watching was added.\n")
+        else: # Section was removed
+            details_in_email.append("A section(s) for a course(s) you were watching was removed.\n")
     else: # The new and original lists are the same size. Now we just check if any course attributes have changed
         index_original = 0 # Index of original_course_object_list to be updated alongside new_course_object_list
         for course_obj in new_course_object_list:
