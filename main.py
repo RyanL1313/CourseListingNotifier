@@ -11,6 +11,8 @@
 # a file called login_info.txt in the program path and putting your email on one line followed by your password on the
 # next will allow this method to work for other people too. Alternatively, if you do not want to supply this text file,
 # the program allows you to enter your username and password in the console if an invalid file path was discovered.
+# If you want this program to run continuously in the background of your computer, supplying the login_info.txt file
+# is necessary to avoid entering your email and password over and over.
 
 # Author: Ryan Lynch
 
@@ -98,18 +100,18 @@ def main():
             if course_obj != original_course_object_list[index_original]: # This course has changed
                 # Now we're checking what individual attributes changed so the e-mail will specify this
                 if course_obj.avail != original_course_object_list[index_original].avail:
-                    details_in_email.append("The number of available slots for CRN " + course_obj.crn + " has "
-                                                                                                        "changed.\n")
+                    details_in_email.append("The number of available slots for CRN " + course_obj.crn + ": " +
+                                            course_obj.title + " has changed to " + course_obj.avail + ".\n")
+
                 if course_obj.waitlist != original_course_object_list[index_original].waitlist:
-                    details_in_email.append("The waitlist number for CRN " + course_obj.crn + " has changed.\n")
+                    details_in_email.append("The waitlist number for CRN " + course_obj.crn + ": " + course_obj.title +
+                                            " has changed to " + course_obj.waitlist + ".\n")
 
                 if course_obj.instructor != original_course_object_list[index_original].instructor:
-                    details_in_email.append("The instructor for CRN " + course_obj.crn + " has changed.\n")
-
+                    details_in_email.append("The instructor for CRN " + course_obj.crn + ": " + course_obj.title +
+                                            " has changed to " + course_obj.instructor + ".\n")
 
             index_original += 1
-
-
 
     if len(details_in_email) != 0: # There was a change to the course listings
         email_message = create_email_message(details_in_email)  # The message that will go in the body of the email
@@ -220,7 +222,6 @@ class Course:
     # Mainly for debugging purposes
     def print_course(self):
         print("CRN: " + self.crn + "\nTitle: " + self.title + "\nAvailable slots: " + self.avail + "\nWaitlisted: " + self.waitlist + "\nInstructor: " + self.instructor + "\n\n")
-
 
 
 if __name__ == "__main__":
