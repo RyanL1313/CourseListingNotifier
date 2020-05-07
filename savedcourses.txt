@@ -40,7 +40,7 @@ TECHNICAL WRITING
 Robertshaw Joseph
 90373
 TECHNICAL WRITING
-8
+9
 0
 STAFF
 90379
@@ -62,4 +62,4 @@ Preston Robert
 INTRO DIGITAL COMP ARCHITECTUR
 2
 0
-Menon Vineetha
+bleaifjwafa
