@@ -104,15 +104,20 @@ def main():
                 # Now we're checking what individual attributes changed so the e-mail will specify this
                 if course_obj.avail != original_course_object_list[index_original].avail:
                     details_in_email.append("The number of available slots for CRN " + course_obj.crn + ": " +
-                                            course_obj.title + " has changed to " + course_obj.avail + ".\n")
+                                            course_obj.title + " has changed from " +
+                                            original_course_object_list[index_original].avail +
+                                            " to " + course_obj.avail + ".\n")
 
                 if course_obj.waitlist != original_course_object_list[index_original].waitlist:
                     details_in_email.append("The waitlist number for CRN " + course_obj.crn + ": " + course_obj.title +
-                                            " has changed to " + course_obj.waitlist + ".\n")
+                                            " has changed from " + original_course_object_list[index_original].waitlist +
+                                            " to " + course_obj.waitlist + ".\n")
 
                 if course_obj.instructor != original_course_object_list[index_original].instructor:
                     details_in_email.append("The instructor for CRN " + course_obj.crn + ": " + course_obj.title +
-                                            " has changed to " + course_obj.instructor + ".\n")
+                                            " has changed from " +
+                                            original_course_object_list[index_original].instructor +
+                                            " to " + course_obj.instructor + ".\n")
 
             index_original += 1
 
